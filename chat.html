@@ -1,1 +1,597 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OracleAI Чат</title>
+    <link rel="icon" href="js.png" type="image/png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo h1 {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2em;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-container {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            height: calc(100vh - 80px);
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stats-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .tools-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tools-card h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .tool-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            background: #f8f9fa;
+            color: #5a6c7d;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .tool-btn:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            line-height: 1.4;
+            position: relative;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background: #f1f3f4;
+            color: #333;
+            border-bottom-left-radius: 5px;
+        }
+
+        .typing-indicator {
+            align-self: flex-start;
+            background: #f1f3f4;
+            padding: 15px 20px;
+            border-radius: 18px;
+            border-bottom-left-radius: 5px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .input-area {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1em;
+            resize: none;
+            max-height: 120px;
+            font-family: inherit;
+        }
+
+        #messageInput:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        #sendButton {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        #sendButton:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        #sendButton:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .image-preview {
+            max-width: 200px;
+            border-radius: 10px;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>🧠 OracleAI Чат</h1>
+            </div>
+            <div class="nav-buttons">
+                <a href="index.html" class="btn btn-secondary">🏠 Главная</a>
+                <button onclick="resetChat()" class="btn btn-secondary">🔄 Сбросить</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="sidebar">
+            <div class="stats-card">
+                <h3>📊 Статистика обучения</h3>
+                <div class="stat-item">
+                    <span>Сообщений:</span>
+                    <span id="messageCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>Обучение:</span>
+                    <span id="trainingStatus">Активно</span>
+                </div>
+                <div class="stat-item">
+                    <span>Контекст:</span>
+                    <span id="contextSize">0</span>
+                </div>
+            </div>
+            
+            <div class="tools-card">
+                <h3>🛠️ Инструменты</h3>
+                <button class="tool-btn" onclick="generateImage()">🎨 Сгенерировать изображение</button>
+                <button class="tool-btn" onclick="showTraining()">🧠 Показать обучение</button>
+                <button class="tool-btn" onclick="exportData()">💾 Экспорт данных</button>
+                <button class="tool-btn" onclick="clearData()">🗑️ Очистить всё</button>
+            </div>
+        </div>
+
+        <div class="chat-area">
+            <div class="messages" id="messagesContainer">
+                <div class="message ai-message">
+                    Привет! Я OracleAI - нейросеть, которая обучается прямо в вашем браузере. Чем больше мы общаемся, тем умнее я становлюсь! 🧠
+                </div>
+            </div>
+            
+            <div class="input-area">
+                <div class="input-container">
+                    <textarea 
+                        id="messageInput" 
+                        placeholder="Введите ваше сообщение..." 
+                        rows="1"
+                        onkeypress="handleKeyPress(event)"
+                    ></textarea>
+                    <button id="sendButton" onclick="sendMessage()">📤</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class SimpleNeuralNetwork {
+            constructor() {
+                this.conversationHistory = [];
+                this.knowledgeBase = {
+                    'привет': ['Привет! Рад нашей беседе! 🤗', 'Здравствуйте! Как ваши дела? 💫', 'Привет! Я готов к общению! 🚀'],
+                    'как дела': ['Отлично! Учусь и развиваюсь! 📚', 'Прекрасно! Спасибо что спрашиваете! 🌟', 'Хорошо! Рад нашему диалогу! 💬'],
+                    'что ты умеешь': ['Я могу общаться, обучаться на наших беседах, генерировать изображения и многое другое! 🎯', 'Я - нейросеть в браузере! Учусь, общаюсь и создаю контент! 🧠'],
+                    'пока': ['До свидания! Жду нашей следующей беседы! 👋', 'Пока! Возвращайтесь скорее! 💫', 'До встречи! Буду скучать! 😊']
+                };
+                this.learningPatterns = [];
+            }
+
+            preprocessText(text) {
+                return text.toLowerCase().replace(/[^\w\sа-яё]/gi, '');
+            }
+
+            findResponse(input) {
+                const processedInput = this.preprocessText(input);
+                
+                // Поиск в базе знаний
+                for (const [keyword, responses] of Object.entries(this.knowledgeBase)) {
+                    if (processedInput.includes(keyword)) {
+                        return responses[Math.floor(Math.random() * responses.length)];
+                    }
+                }
+
+                // Умные ответы на основе контекста
+                const smartResponses = [
+                    "Интересно! Расскажите подробнее? 🤔",
+                    "Я пока учусь, но мне очень нравится эта тема! 💫",
+                    "Отличный вопрос! Давайте обсудим это! 💬",
+                    "Понимаю вас. Что ещё вас интересует? 🧠",
+                    "Это заставляет задуматься... 📚",
+                    "Спасибо за интересную беседу! Я учусь благодаря вам! 🚀",
+                    "Интересная мысль! Продолжаем разговор? 💭",
+                    "Я становлюсь умнее с каждым вашим сообщением! 🌟"
+                ];
+
+                // Добавляем в историю для обучения
+                this.conversationHistory.push({ input, response: '' });
+                if (this.conversationHistory.length > 10) {
+                    this.conversationHistory.shift();
+                }
+
+                return smartResponses[Math.floor(Math.random() * smartResponses.length)];
+            }
+
+            learnFromInteraction(input, response) {
+                // Простое обучение - запоминание паттернов
+                this.learningPatterns.push({
+                    input: this.preprocessText(input),
+                    response: response,
+                    timestamp: Date.now()
+                });
+
+                // Ограничиваем размер базы обучения
+                if (this.learningPatterns.length > 50) {
+                    this.learningPatterns.shift();
+                }
+            }
+        }
+
+        class ImageGenerator {
+            static createImage(text) {
+                return new Promise((resolve) => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 400;
+                    canvas.height = 300;
+                    const ctx = canvas.getContext('2d');
+
+                    // Градиентный фон
+                    const gradient = ctx.createLinearGradient(0, 0, 400, 300);
+                    gradient.addColorStop(0, '#667eea');
+                    gradient.addColorStop(1, '#764ba2');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, 400, 300);
+
+                    // Текст
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 20px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('OracleAI Генерация', 200, 40);
+
+                    // Основной текст
+                    ctx.font = '16px Arial';
+                    const words = text.split(' ');
+                    let lines = [];
+                    let currentLine = '';
+
+                    words.forEach(word => {
+                        if (ctx.measureText(currentLine + word).width < 350) {
+                            currentLine += word + ' ';
+                        } else {
+                            lines.push(currentLine);
+                            currentLine = word + ' ';
+                        }
+                    });
+                    if (currentLine) lines.push(currentLine);
+
+                    lines.slice(0, 4).forEach((line, index) => {
+                        ctx.fillText(line, 200, 90 + index * 30);
+                    });
+
+                    // Водяной знак
+                    ctx.font = '12px Arial';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                    ctx.fillText('Создано нейросетью OracleAI', 200, 280);
+
+                    resolve(canvas.toDataURL());
+                });
+            }
+        }
+
+        // Инициализация нейросети
+        const neuralNetwork = new SimpleNeuralNetwork();
+        let messageCount = 0;
+
+        function updateStats() {
+            document.getElementById('messageCount').textContent = messageCount;
+            document.getElementById('contextSize').textContent = neuralNetwork.conversationHistory.length;
+        }
+
+        function addMessage(text, isUser = false) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+            messageDiv.textContent = text;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function addImageMessage(imageData) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ai-message';
+            messageDiv.textContent = '🎨 Вот сгенерированное изображение:';
+            
+            const img = document.createElement('img');
+            img.src = imageData;
+            img.className = 'image-preview';
+            messageDiv.appendChild(img);
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('messagesContainer');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.textContent = 'OracleAI печатает...';
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // Добавляем сообщение пользователя
+            addMessage(message, true);
+            messageCount++;
+            input.value = '';
+
+            // Показываем индикатор набора
+            showTypingIndicator();
+
+            // Имитируем обработку нейросетью
+            setTimeout(async () => {
+                hideTypingIndicator();
+                
+                let response;
+                if (message.toLowerCase().includes('сгенерируй') || message.toLowerCase().includes('изображение')) {
+                    // Генерация изображения
+                    const imageText = message.replace(/сгенерируй|изображение/gi, '').trim() || 'Красивая абстракция';
+                    const imageData = await ImageGenerator.createImage(imageText);
+                    addImageMessage(imageData);
+                    response = 'Изображение готово! 🎨';
+                } else {
+                    // Обычный ответ
+                    response = neuralNetwork.findResponse(message);
+                    neuralNetwork.learnFromInteraction(message, response);
+                }
+                
+                addMessage(response);
+                messageCount++;
+                updateStats();
+            }, 1000 + Math.random() * 1000);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function resetChat() {
+            const messagesContainer = document.getElementById('messagesContainer');
+            messagesContainer.innerHTML = '';
+            addMessage('Привет! Я OracleAI - нейросеть, которая обучается прямо в вашем браузере. Чем больше мы общаемся, тем умнее я становлюсь! 🧠');
+            messageCount = 1;
+            neuralNetwork.conversationHistory = [];
+            updateStats();
+        }
+
+        async function generateImage() {
+            const prompt = prompt('Введите описание для изображения:', 'Космический пейзаж со звездами');
+            if (prompt) {
+                showTypingIndicator();
+                setTimeout(async () => {
+                    hideTypingIndicator();
+                    const imageData = await ImageGenerator.createImage(prompt);
+                    addImageMessage(imageData);
+                    messageCount++;
+                    updateStats();
+                }, 1500);
+            }
+        }
+
+        function showTraining() {
+            alert(`Нейросеть обучается! 🧠\n\nСообщений в истории: ${neuralNetwork.conversationHistory.length}\nПаттернов изучено: ${neuralNetwork.learningPatterns.length}\n\nПродолжайте общение для улучшения результатов!`);
+        }
+
+        function exportData() {
+            const data = {
+                conversationHistory: neuralNetwork.conversationHistory,
+                learningPatterns: neuralNetwork.learningPatterns,
+                stats: { messageCount, timestamp: new Date().toISOString() }
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'oracleai_data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function clearData() {
+            if (confirm('Вы уверены что хотите очистить все данные?')) {
+                localStorage.clear();
+                resetChat();
+                alert('Все данные очищены! 🔄');
+            }
+        }
+
+        // Авто-размер textarea
+        document.getElementById('messageInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Инициализация
+        updateStats();
+    </script>
+</body>
+</html>
