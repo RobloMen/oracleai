@@ -36,11 +36,25 @@
             align-items: center;
         }
 
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: white;
+            padding: 5px;
+        }
+
         .logo h1 {
             background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 2em;
+            font-size: 1.8em;
         }
 
         .nav-buttons {
@@ -182,6 +196,21 @@
             border-bottom-left-radius: 5px;
         }
 
+        .ai-message-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .ai-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+        }
+
         .typing-indicator {
             align-self: flex-start;
             background: #f1f3f4;
@@ -190,6 +219,35 @@
             border-bottom-left-radius: 5px;
             color: #666;
             font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
         }
 
         .input-area {
@@ -269,7 +327,8 @@
     <div class="header">
         <div class="header-content">
             <div class="logo">
-                <h1>🧠 OracleAI Чат</h1>
+                <img src="js.png" alt="OracleAI" class="logo-icon">
+                <h1>OracleAI Чат</h1>
             </div>
             <div class="nav-buttons">
                 <a href="index.html" class="btn btn-secondary">🏠 Главная</a>
@@ -299,7 +358,7 @@
             <div class="tools-card">
                 <h3>🛠️ Инструменты</h3>
                 <button class="tool-btn" onclick="generateImage()">🎨 Сгенерировать изображение</button>
-                <button class="tool-btn" onclick="showTraining()">🧠 Показать обучение</button>
+                <button class="tool-btn" onclick="showTraining()">📊 Показать обучение</button>
                 <button class="tool-btn" onclick="exportData()">💾 Экспорт данных</button>
                 <button class="tool-btn" onclick="clearData()">🗑️ Очистить всё</button>
             </div>
@@ -308,7 +367,11 @@
         <div class="chat-area">
             <div class="messages" id="messagesContainer">
                 <div class="message ai-message">
-                    Привет! Я OracleAI - нейросеть, которая обучается прямо в вашем браузере. Чем больше мы общаемся, тем умнее я становлюсь! 🧠
+                    <div class="ai-message-header">
+                        <img src="js.png" alt="AI" class="ai-icon">
+                        <span>OracleAI</span>
+                    </div>
+                    Привет! Я OracleAI - нейросеть, которая обучается прямо в вашем браузере. Чем больше мы общаемся, тем умнее я становлюсь!
                 </div>
             </div>
             
@@ -333,7 +396,7 @@
                 this.knowledgeBase = {
                     'привет': ['Привет! Рад нашей беседе! 🤗', 'Здравствуйте! Как ваши дела? 💫', 'Привет! Я готов к общению! 🚀'],
                     'как дела': ['Отлично! Учусь и развиваюсь! 📚', 'Прекрасно! Спасибо что спрашиваете! 🌟', 'Хорошо! Рад нашему диалогу! 💬'],
-                    'что ты умеешь': ['Я могу общаться, обучаться на наших беседах, генерировать изображения и многое другое! 🎯', 'Я - нейросеть в браузере! Учусь, общаюсь и создаю контент! 🧠'],
+                    'что ты умеешь': ['Я могу общаться, обучаться на наших беседах, генерировать изображения и многое другое! 🎯', 'Я - нейросеть в браузере! Учусь, общаюсь и создаю контент!'],
                     'пока': ['До свидания! Жду нашей следующей беседы! 👋', 'Пока! Возвращайтесь скорее! 💫', 'До встречи! Буду скучать! 😊']
                 };
                 this.learningPatterns = [];
@@ -358,7 +421,7 @@
                     "Интересно! Расскажите подробнее? 🤔",
                     "Я пока учусь, но мне очень нравится эта тема! 💫",
                     "Отличный вопрос! Давайте обсудим это! 💬",
-                    "Понимаю вас. Что ещё вас интересует? 🧠",
+                    "Понимаю вас. Что ещё вас интересует?",
                     "Это заставляет задуматься... 📚",
                     "Спасибо за интересную беседу! Я учусь благодаря вам! 🚀",
                     "Интересная мысль! Продолжаем разговор? 💭",
@@ -404,38 +467,45 @@
                     ctx.fillStyle = gradient;
                     ctx.fillRect(0, 0, 400, 300);
 
-                    // Текст
-                    ctx.fillStyle = 'white';
-                    ctx.font = 'bold 20px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('OracleAI Генерация', 200, 40);
+                    // Добавляем иконку в угол
+                    const icon = new Image();
+                    icon.src = 'js.png';
+                    icon.onload = function() {
+                        ctx.drawImage(icon, 20, 20, 40, 40);
 
-                    // Основной текст
-                    ctx.font = '16px Arial';
-                    const words = text.split(' ');
-                    let lines = [];
-                    let currentLine = '';
+                        // Текст
+                        ctx.fillStyle = 'white';
+                        ctx.font = 'bold 20px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('OracleAI Генерация', 200, 40);
 
-                    words.forEach(word => {
-                        if (ctx.measureText(currentLine + word).width < 350) {
-                            currentLine += word + ' ';
-                        } else {
-                            lines.push(currentLine);
-                            currentLine = word + ' ';
-                        }
-                    });
-                    if (currentLine) lines.push(currentLine);
+                        // Основной текст
+                        ctx.font = '16px Arial';
+                        const words = text.split(' ');
+                        let lines = [];
+                        let currentLine = '';
 
-                    lines.slice(0, 4).forEach((line, index) => {
-                        ctx.fillText(line, 200, 90 + index * 30);
-                    });
+                        words.forEach(word => {
+                            if (ctx.measureText(currentLine + word).width < 350) {
+                                currentLine += word + ' ';
+                            } else {
+                                lines.push(currentLine);
+                                currentLine = word + ' ';
+                            }
+                        });
+                        if (currentLine) lines.push(currentLine);
 
-                    // Водяной знак
-                    ctx.font = '12px Arial';
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                    ctx.fillText('Создано нейросетью OracleAI', 200, 280);
+                        lines.slice(0, 4).forEach((line, index) => {
+                            ctx.fillText(line, 200, 90 + index * 30);
+                        });
 
-                    resolve(canvas.toDataURL());
+                        // Водяной знак
+                        ctx.font = '12px Arial';
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                        ctx.fillText('Создано нейросетью OracleAI', 200, 280);
+
+                        resolve(canvas.toDataURL());
+                    };
                 });
             }
         }
@@ -453,7 +523,21 @@
             const messagesContainer = document.getElementById('messagesContainer');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
-            messageDiv.textContent = text;
+            
+            if (!isUser) {
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'ai-message-header';
+                headerDiv.innerHTML = `
+                    <img src="js.png" alt="AI" class="ai-icon">
+                    <span>OracleAI</span>
+                `;
+                messageDiv.appendChild(headerDiv);
+            }
+            
+            const textDiv = document.createElement('div');
+            textDiv.textContent = text;
+            messageDiv.appendChild(textDiv);
+            
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
@@ -462,7 +546,18 @@
             const messagesContainer = document.getElementById('messagesContainer');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message ai-message';
-            messageDiv.textContent = '🎨 Вот сгенерированное изображение:';
+            
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'ai-message-header';
+            headerDiv.innerHTML = `
+                <img src="js.png" alt="AI" class="ai-icon">
+                <span>OracleAI</span>
+            `;
+            messageDiv.appendChild(headerDiv);
+            
+            const textDiv = document.createElement('div');
+            textDiv.textContent = '🎨 Вот сгенерированное изображение:';
+            messageDiv.appendChild(textDiv);
             
             const img = document.createElement('img');
             img.src = imageData;
@@ -478,7 +573,15 @@
             const typingDiv = document.createElement('div');
             typingDiv.className = 'typing-indicator';
             typingDiv.id = 'typingIndicator';
-            typingDiv.textContent = 'OracleAI печатает...';
+            typingDiv.innerHTML = `
+                <img src="js.png" alt="AI" style="width: 20px; height: 20px; border-radius: 5px;">
+                <span>OracleAI печатает</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
             messagesContainer.appendChild(typingDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
@@ -537,7 +640,7 @@
         function resetChat() {
             const messagesContainer = document.getElementById('messagesContainer');
             messagesContainer.innerHTML = '';
-            addMessage('Привет! Я OracleAI - нейросеть, которая обучается прямо в вашем браузере. Чем больше мы общаемся, тем умнее я становлюсь! 🧠');
+            addMessage('Привет! Я OracleAI - нейросеть, которая обучается прямо в вашем браузере. Чем больше мы общаемся, тем умнее я становлюсь!');
             messageCount = 1;
             neuralNetwork.conversationHistory = [];
             updateStats();
@@ -558,7 +661,7 @@
         }
 
         function showTraining() {
-            alert(`Нейросеть обучается! 🧠\n\nСообщений в истории: ${neuralNetwork.conversationHistory.length}\nПаттернов изучено: ${neuralNetwork.learningPatterns.length}\n\nПродолжайте общение для улучшения результатов!`);
+            alert(`Нейросеть обучается! 📊\n\nСообщений в истории: ${neuralNetwork.conversationHistory.length}\nПаттернов изучено: ${neuralNetwork.learningPatterns.length}\n\nПродолжайте общение для улучшения результатов!`);
         }
 
         function exportData() {
