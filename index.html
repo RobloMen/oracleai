@@ -35,6 +35,22 @@
             backdrop-filter: blur(10px);
         }
 
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            background: white;
+            padding: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
         .logo h1 {
             font-size: 3em;
             margin-bottom: 10px;
@@ -46,6 +62,7 @@
         .logo p {
             font-size: 1.2em;
             opacity: 0.9;
+            color: white;
         }
 
         .main-content {
@@ -185,8 +202,15 @@
         }
 
         .feature-icon {
-            font-size: 3em;
-            margin-bottom: 20px;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px auto;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
         }
 
         .feature-card h4 {
@@ -261,6 +285,11 @@
             .cta-buttons {
                 justify-content: center;
             }
+
+            .logo {
+                flex-direction: column;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -268,8 +297,11 @@
     <div class="container">
         <header class="header">
             <div class="logo">
-                <h1>🧠 OracleAI</h1>
-                <p>Нейросеть которая обучается в вашем браузере</p>
+                <img src="js.png" alt="OracleAI" class="logo-icon">
+                <div>
+                    <h1>OracleAI</h1>
+                    <p>Нейросеть которая обучается в вашем браузере</p>
+                </div>
             </div>
         </header>
 
@@ -315,7 +347,9 @@
                         <p>Создавайте уникальные изображения по текстовым описаниям</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🧠</div>
+                        <div class="feature-icon">
+                            <img src="js.png" alt="AI" style="width: 40px; height: 40px;">
+                        </div>
                         <h4>Обучение в реальном времени</h4>
                         <p>Нейросеть улучшает свои ответы с каждым вашим сообщением</p>
                     </div>
