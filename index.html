@@ -1,1 +1,481 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OracleAI - Нейросеть в браузере</title>
+    <link rel="icon" href="js.png" type="image/png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            gap: 40px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-content h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .hero-content p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            color: #5a6c7d;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .neural-network-demo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            height: 200px;
+        }
+
+        .neuron-layer {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .neuron {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .neuron:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .neuron:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .features {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .features h3 {
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 40px;
+            color: #2c3e50;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h4 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .feature-card p {
+            color: #5a6c7d;
+            line-height: 1.6;
+        }
+
+        .demo-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-section h3 {
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        .demo-container {
+            text-align: center;
+        }
+
+        .neural-visualization {
+            margin-bottom: 30px;
+        }
+
+        #neuralCanvas {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .demo-controls {
+            margin-bottom: 20px;
+        }
+
+        .demo-stats {
+            font-size: 1.2em;
+            color: #5a6c7d;
+        }
+
+        .demo-stats p {
+            margin: 10px 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1>🧠 OracleAI</h1>
+                <p>Нейросеть которая обучается в вашем браузере</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="hero">
+                <div class="hero-content">
+                    <h2>Умный ИИ прямо в браузере</h2>
+                    <p>Общайтесь с нейросетью, которая обучается на ваших сообщениях и генерирует уникальные изображения. Вся обработка происходит локально в вашем браузере!</p>
+                    <div class="cta-buttons">
+                        <a href="chat.html" class="btn btn-primary">💬 Начать общение</a>
+                        <button class="btn btn-secondary" onclick="showDemo()">🧪 Демо нейросети</button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="neural-network-demo">
+                        <div class="neuron-layer">
+                            <div class="neuron"></div>
+                            <div class="neuron"></div>
+                            <div class="neuron"></div>
+                        </div>
+                        <div class="neuron-layer">
+                            <div class="neuron"></div>
+                            <div class="neuron"></div>
+                        </div>
+                        <div class="neuron-layer">
+                            <div class="neuron"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="features">
+                <h3>🚀 Возможности OracleAI</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">💬</div>
+                        <h4>Умный чат</h4>
+                        <p>Общайтесь с нейросетью, которая запоминает контекст и обучается на диалогах</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <h4>Генерация изображений</h4>
+                        <p>Создавайте уникальные изображения по текстовым описаниям</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🧠</div>
+                        <h4>Обучение в реальном времени</h4>
+                        <p>Нейросеть улучшает свои ответы с каждым вашим сообщением</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h4>Работает в браузере</h4>
+                        <p>Не требует сервера - вся обработка происходит локально</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="demo-section" id="demoSection" style="display: none;">
+                <h3>🔬 Демонстрация нейросети</h3>
+                <div class="demo-container">
+                    <div class="neural-visualization">
+                        <canvas id="neuralCanvas" width="600" height="300"></canvas>
+                    </div>
+                    <div class="demo-controls">
+                        <button onclick="trainDemo()" class="btn btn-primary">🎯 Обучить нейросеть</button>
+                        <button onclick="resetDemo()" class="btn btn-secondary">🔄 Сбросить</button>
+                    </div>
+                    <div class="demo-stats">
+                        <p>📈 Эпохи обучения: <span id="epochCount">0</span></p>
+                        <p>📉 Потери: <span id="lossValue">0.0000</span></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 OracleAI. Все вычисления происходят в вашем браузере. 🔒</p>
+        </footer>
+    </div>
+
+    <script>
+        function showDemo() {
+            document.getElementById('demoSection').style.display = 'block';
+            initNeuralVisualization();
+        }
+
+        function initNeuralVisualization() {
+            const canvas = document.getElementById('neuralCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            function drawNeuralNetwork() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Рисуем нейросеть
+                const layers = [3, 4, 2, 1];
+                const layerWidth = canvas.width / (layers.length + 1);
+                
+                // Рисуем нейроны и связи
+                for (let i = 0; i < layers.length; i++) {
+                    const x = layerWidth * (i + 1);
+                    const neuronsInLayer = layers[i];
+                    const neuronSpacing = canvas.height / (neuronsInLayer + 1);
+                    
+                    // Рисуем связи с предыдущим слоем
+                    if (i > 0) {
+                        const prevNeurons = layers[i - 1];
+                        const prevX = layerWidth * i;
+                        const prevSpacing = canvas.height / (prevNeurons + 1);
+                        
+                        for (let j = 0; j < prevNeurons; j++) {
+                            const prevY = prevSpacing * (j + 1);
+                            for (let k = 0; k < neuronsInLayer; k++) {
+                                const currentY = neuronSpacing * (k + 1);
+                                ctx.beginPath();
+                                ctx.moveTo(prevX, prevY);
+                                ctx.lineTo(x, currentY);
+                                ctx.strokeStyle = 'rgba(100, 100, 255, 0.3)';
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                    
+                    // Рисуем нейроны
+                    for (let j = 0; j < neuronsInLayer; j++) {
+                        const y = neuronSpacing * (j + 1);
+                        ctx.beginPath();
+                        ctx.arc(x, y, 15, 0, 2 * Math.PI);
+                        ctx.fillStyle = '#4a90e2';
+                        ctx.fill();
+                        ctx.strokeStyle = '#357abd';
+                        ctx.stroke();
+                    }
+                }
+            }
+            
+            drawNeuralNetwork();
+        }
+
+        let demoEpochs = 0;
+        let demoLoss = 1.0;
+
+        function trainDemo() {
+            demoEpochs++;
+            demoLoss = Math.max(0.0001, demoLoss * 0.8 + Math.random() * 0.1);
+            
+            document.getElementById('epochCount').textContent = demoEpochs;
+            document.getElementById('lossValue').textContent = demoLoss.toFixed(4);
+            
+            // Анимируем нейросеть
+            animateNeurons();
+        }
+
+        function resetDemo() {
+            demoEpochs = 0;
+            demoLoss = 1.0;
+            document.getElementById('epochCount').textContent = '0';
+            document.getElementById('lossValue').textContent = '0.0000';
+            initNeuralVisualization();
+        }
+
+        function animateNeurons() {
+            const canvas = document.getElementById('neuralCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const layers = [3, 4, 2, 1];
+            const layerWidth = canvas.width / (layers.length + 1);
+            const pulse = Math.sin(Date.now() / 200) * 0.5 + 0.5;
+            
+            for (let i = 0; i < layers.length; i++) {
+                const x = layerWidth * (i + 1);
+                const neuronsInLayer = layers[i];
+                const neuronSpacing = canvas.height / (neuronsInLayer + 1);
+                
+                if (i > 0) {
+                    const prevNeurons = layers[i - 1];
+                    const prevX = layerWidth * i;
+                    const prevSpacing = canvas.height / (prevNeurons + 1);
+                    
+                    for (let j = 0; j < prevNeurons; j++) {
+                        const prevY = prevSpacing * (j + 1);
+                        for (let k = 0; k < neuronsInLayer; k++) {
+                            const currentY = neuronSpacing * (k + 1);
+                            ctx.beginPath();
+                            ctx.moveTo(prevX, prevY);
+                            ctx.lineTo(x, currentY);
+                            ctx.strokeStyle = `rgba(100, 100, 255, ${0.2 + pulse * 0.3})`;
+                            ctx.stroke();
+                        }
+                    }
+                }
+                
+                for (let j = 0; j < neuronsInLayer; j++) {
+                    const y = neuronSpacing * (j + 1);
+                    const neuronPulse = Math.sin(Date.now() / 200 + j * 0.5) * 0.3 + 0.7;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, 15, 0, 2 * Math.PI);
+                    ctx.fillStyle = `rgba(74, 144, 226, ${neuronPulse})`;
+                    ctx.fill();
+                    ctx.strokeStyle = '#357abd';
+                    ctx.stroke();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
